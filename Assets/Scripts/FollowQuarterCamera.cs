@@ -10,10 +10,10 @@ using Unity.Cinemachine;
 public class FollowQuarterCamera : NetworkBehaviour
 {
     //네트워크 오브젝트가 생성될 때 호출되는 메소드를 오버라이드
-    //탱크가 네트워크에 스폰될 때 카메라를 설정하기 위함
+    //탱크가 네트워크에 스폰될 때 카메라를 설정하기 위함(오류 방지)
     public override void OnNetworkSpawn() 
     {
-        if (!IsOwner) return;
+        if (!IsOwner) return; //오너가 아닌 경우 리턴
 
         GameObject cameraTargetObj = GameObject.Find("CameraTarget"); //CameraTarget 오브젝트 찾기
         if (cameraTargetObj == null) return;
@@ -29,8 +29,8 @@ public class FollowQuarterCamera : NetworkBehaviour
         
         if (trackingCam != null)
         {
-            trackingCam.Follow = cameraTargetObj.transform; //카메라의 추적 대상 설정
-            trackingCam.LookAt = transform; //카메라가 바라볼 대상 설정
+            trackingCam.Follow = cameraTargetObj.transform; //카메라의 추적 대상 설정(CameraTarget)
+            trackingCam.LookAt = transform;                 //카메라가 바라볼 대상 설정(탱크)
         }
     }
 }
