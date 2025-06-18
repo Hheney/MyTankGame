@@ -19,6 +19,41 @@ public class PlayerHealthNet : NetworkBehaviour
 
     }
 
+    /*
+     [네트워크상에서 물리 충돌 문제가 발생함]
+     - Host는 포탄에 맞으면 매우 강하게 밀림
+     - Client는 포탄에 맞아도 거의 밀리지 않거나 아예 반응이 없는 문제가 발생함
+     - Unity Netcode for GameObjects는 Rigidbody 물리 연산(AddForce 등)을 
+       해당 오브젝트의 Owner만 직접 수행할 수 있도록 제한
+     
+     - BombNet에서 Server 입장에서 상대방 플레이어 Rigidbody에 
+       직접 AddForce를 호출하면, 이는 Host의 Rigidbody에는 적용되지만 
+       Client의 Rigidbody에는 무시됨 (오너가 아님)
+          
+     - 충돌한 플레이어에게 방향 벡터를 전달하고
+       각 플레이어가 자기 Rigidbody에만 Force를 적용하도록 RPC 호출 구조를 변경함
+     */
+
+    [Rpc(SendTo.Owner)]
+    public void f_ApplyPushForceRpc(Vector3 vDirection) //반작용 힘을 적용하는 RPC 메소드
+    {
+        Rigidbody rb = GetComponent<Rigidbody>();
+        if (rb != null)
+        {
+            float fPushPower = 500.0f; //밀림 강도
+            rb.AddForce(vDirection * fPushPower, ForceMode.Impulse); //Impulse 모드로 힘을 가함
+        }
+    }
+
+    [Rpc(SendTo.Owner)]
+    public void decHealthByAmountRpc(int nAmount)
+    {
+        int curValue = health.Value - nAmount;
+        if (curValue < 0) curValue = 0;
+        health.Value = curValue;
+        Debug.Log($"health -= {nAmount} → {health.Value}");
+    }
+
     public override void OnNetworkSpawn()
     {
         if (IsOwner)

@@ -1,5 +1,5 @@
-using UnityEngine;
 using TMPro;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class UiManagerTank : MonoBehaviour
@@ -9,6 +9,8 @@ public class UiManagerTank : MonoBehaviour
 
     public int health = 0;
     public int maxHealth = 100;
+
+    [SerializeField] private GameObject panelGameEndMenu; //ESC 메뉴 패널
 
     private static UiManagerTank _instance = null;
     public static UiManagerTank Instance
@@ -28,6 +30,10 @@ public class UiManagerTank : MonoBehaviour
     {
         GameManager.Instance.startNode();
         GameManager.Instance.updateCountId();
+
+        SoundManager.Instance.f_StopAllBGM();  //모든 배경음악 정지
+        SoundManager.Instance.f_AutoPlayBGM(); //Tank 씬에서 자동으로 배경음악 재생
+
         health = maxHealth;
         updateTextUserInfo();
         updateSliderHealth();
@@ -37,7 +43,10 @@ public class UiManagerTank : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        if (Input.GetKeyDown(KeyCode.Escape)) //ESC 키 누르면 종료 메뉴 패널 토글
+        {
+            panelGameEndMenu.SetActive(!panelGameEndMenu.activeSelf); //패널 활성화/비활성화 토글
+        }
     }
 
     private void Awake()
@@ -67,5 +76,15 @@ public class UiManagerTank : MonoBehaviour
     {
         GameManager.Instance.updateCountId();
         updateTextUserInfo();
+    }
+
+    public void f_OnClick_Resume() //게임 재개 버튼 클릭 시 호출(단축키는 ESC)
+    {
+        panelGameEndMenu.SetActive(false); //메뉴 패널 비활성화
+    }
+
+    public void f_OnClick_Quit() //게임 종료 버튼 클릭 시 호출
+    {
+        Application.Quit();
     }
 }

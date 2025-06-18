@@ -26,7 +26,8 @@ public class UiManagerBegin : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-
+        SoundManager.Instance.f_StopAllBGM();  //모든 배경음악 정지
+        SoundManager.Instance.f_AutoPlayBGM(); //Begin 씬에서 자동으로 배경음악 재생
     }
 
     // Update is called once per frame
@@ -52,21 +53,21 @@ public class UiManagerBegin : MonoBehaviour
     {
         GameManager.Instance.UserNodeType = GameManager.NodeType.HOST;
         updateConnection();
-        SceneManager.LoadScene("TankScene");
+        FlowManager.Instance.f_OpenScene(SceneName.TankScene); //FlowManager를 통해 TankScene씬 전환
     }
 
     public void startClient()
     {
         GameManager.Instance.UserNodeType = GameManager.NodeType.CLIENT;
         updateConnection();
-        SceneManager.LoadScene("TankScene");
+        FlowManager.Instance.f_OpenScene(SceneName.TankScene); //FlowManager를 통해 TankScene씬 전환
     }
 
     public void startServer()
     {
         GameManager.Instance.UserNodeType = GameManager.NodeType.SERVER;
         updateConnection();
-        SceneManager.LoadScene("TankScene");
+        FlowManager.Instance.f_OpenScene(SceneName.TankScene); //FlowManager를 통해 TankScene씬 전환
     }
 
     public void updateConnection()

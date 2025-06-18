@@ -129,4 +129,24 @@ public class GameManager : MonoBehaviour
     {
         CountId = getNumClients();
     }
+
+    //점령 시스템에 사용되는 모든 플레이어에게 데미지를 적용하는 메소드
+    public void f_DamageAllExcept(GameObject excluding, int nDamage)
+    {
+        foreach (NetworkClient client in NetworkManager.Singleton.ConnectedClientsList) //모든 클라이언트에 대해 반복
+        {
+            GameObject gClient = client.PlayerObject.gameObject; //클라이언트의 PlayerObject를 가져옴
+            if (gClient != excluding) //제외할 플레이어(점령자)가 아닌 경우
+            {
+                PlayerHealthNet health = gClient.GetComponent<PlayerHealthNet>(); //PlayerHealthNet 컴포넌트를 가져옴
+                if (health != null)
+                {
+                    health.decHealthByAmountRpc(nDamage); //플레이어의 체력을 감소시키는 RPC 호출
+                }
+                SoundManager.Instance.f_PlaySFX(SoundName.SFX_AreaLost, 0.7f); //점령 실패 효과음 재생
+            }
+        }
+    }
+
+
 }
