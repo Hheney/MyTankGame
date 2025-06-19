@@ -1,8 +1,9 @@
 //플레이어가 SafeZone(안전 구역)을 벗어났는지 체크하는 스크립트
+using System.Globalization;
 using UnityEngine;
+using Unity.Netcode;
 
-
-public class PlayerOutZoneDetector : MonoBehaviour
+public class PlayerOutZoneDetector : NetworkBehaviour
 {
     private Collider zoneCollider = null;   //SafeZone의 콜라이더
     private float fCheckInterval = 1.0f;    //체크 간격 (초)
@@ -25,6 +26,7 @@ public class PlayerOutZoneDetector : MonoBehaviour
 
     void Update()
     {
+        if (!IsOwner) return;
         if (zoneCollider == null) return; //SafeZone 콜라이더가 없으면 체크하지 않음
 
         fTimer += Time.deltaTime;
