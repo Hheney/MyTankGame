@@ -1,3 +1,5 @@
+##[추가한 기능 (Custom Features)]
+
 🔵 1. 반작용 힘 적용 (충돌 후 밀림 효과)
 - Unity Netcode 환경에서의 Rigidbody 제어 한계 해결
 - 포탄이 탱크에 충돌 시, 방향 벡터를 RPC로 전달하여 해당 플레이어가 직접 자기 Rigidbody에 힘을 적용
